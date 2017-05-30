@@ -1,5 +1,5 @@
 #!/bin/sh
-SRCDIR=/data/src
+SRCDIR=/usr/local/tomcat/test-data
 mkdir $SRCDIR \
   && cd $SRCDIR \
   && git init \
@@ -11,5 +11,8 @@ int main(int argc, char** argv) {
 END
 git add main.c \
   && git commit -m"Test source"
-/usr/local/tomcat/opengrok-*/bin/OpenGrok index /data
-curl -f http://localhost:8080/source/xref/src
+opengrok-*/bin/OpenGrok deploy \
+    && opengrok-*/bin/OpenGrok index $SRCDIR \
+    && sudo service cron start \
+    && catalina.sh run
+curl -f http://localhost:8080/source/xref/$(basename $SRCDIR)
