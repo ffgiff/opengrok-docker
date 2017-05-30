@@ -29,6 +29,7 @@ RUN apt-get update \
     && chown -R tomcat . \
     && echo done
 
+COPY run_tests.sh /usr/local/tomcat/
 VOLUME /data
 USER tomcat
 CMD ${OPENGROKVERSION}/bin/OpenGrok deploy \
