@@ -18,5 +18,5 @@ cd /usr/local/tomcat
     && /usr/local/tomcat/${OPENGROKVERSION}/bin/OpenGrok index $(dirname $SRCDIR) \
     && sudo service cron start \
     && catalina.sh start
-sleep 10
+sleep 30
 curl -f http://localhost:8080/source/xref/$(basename $SRCDIR)/
