@@ -1,5 +1,5 @@
 # Dockerfile for OpenGrok
-FROM tomcat:8.5-jre8
+FROM tomcat:8.5-jre8-alpine
 
 # Name of OpenGrok zip file.
 ENV OPENGROKVERSIONCODE 1.0
@@ -11,19 +11,20 @@ ENV OPENGROK_APP_SERVER=Tomcat
 ENV OPENGROK_WAR_TARGET_TOMCAT=$CATALINA_HOME/webapps
 ENV OPENGROK_TOMCAT_BASE=$CATALINA_HOME
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        cron \
-        exuberant-ctags \
+RUN apk update \
+    && apk add \
+        ctags \
+        curl \
+        dcron \
         git \
         sudo \
-    && curl -LO "$OPENGROKZIP" \
-    && tar xaf ${OPENGROKVERSION}.tar.gz \
-    && useradd -m tomcat \
+    && curl -LO "${OPENGROKZIP}" \
+    && tar xzf ${OPENGROKVERSION}.tar.gz \
+    && adduser -D tomcat \
     && echo "tomcat:builder" | chpasswd \
     && echo "00 10 * * 1-5 /usr/local/tomcat/${OPENGROKVERSION}/bin/OpenGrok index /data" >> crontab \
     && crontab -u tomcat crontab \
-    && echo "tomcat ALL=NOPASSWD: /usr/sbin/service cron start" >> /etc/sudoers.d/cron \
+    && echo "tomcat ALL=NOPASSWD: /usr/sbin/crond" >> /etc/sudoers.d/cron \
     && mkdir /var/opengrok \
     && chown tomcat /var/opengrok \
     && chown -R tomcat . \
@@ -33,9 +34,9 @@ COPY run_tests.sh /usr/local/tomcat/
 VOLUME /data
 USER tomcat
 CMD ${OPENGROKVERSION}/bin/OpenGrok deploy \
-    && find webapps -maxdepth 1 -name source* -execdir \
-        sh -c 'mv -u $(basename {}) $(echo $(basename {}) | sed s/source/${OPENGROK_WEBAPP_CONTEXT:-source}/)' \; \
+    && find webapps -maxdepth 1 -name source* -exec \
+        sh -c 'mv -u {} $(dirname {})/$(echo $(basename {}) | sed s/source/${OPENGROK_WEBAPP_CONTEXT:-source}/)' \; \
     && ${OPENGROKVERSION}/bin/OpenGrok index /data \
-    && sudo service cron start \
+    && sudo crond \
     && catalina.sh run
 

@@ -16,7 +16,7 @@ git config --global user.email "test@localhost" \
 cd /usr/local/tomcat
 /usr/local/tomcat/${OPENGROKVERSION}/bin/OpenGrok deploy \
     && /usr/local/tomcat/${OPENGROKVERSION}/bin/OpenGrok index $(dirname $SRCDIR) \
-    && sudo service cron start \
+    && sudo crond \
     && catalina.sh start
 sleep 30
 curl -f http://localhost:8080/source/xref/$(basename $SRCDIR)/
