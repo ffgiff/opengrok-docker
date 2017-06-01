@@ -35,7 +35,7 @@ VOLUME /data
 USER tomcat
 CMD ${OPENGROKVERSION}/bin/OpenGrok deploy \
     && find webapps -maxdepth 1 -name source* -exec \
-        sh -c 'mv -u {} $(dirname {})/$(echo $(basename {}) | sed s/source/${OPENGROK_WEBAPP_CONTEXT:-source}/)' \; \
+        sh -c 'mv -n {} $(dirname {})/$(echo $(basename {}) | sed s/source/${OPENGROK_WEBAPP_CONTEXT:-source}/)' \; \
     && ${OPENGROKVERSION}/bin/OpenGrok index /data \
     && sudo crond \
     && catalina.sh run
