@@ -13,7 +13,8 @@ git config --global user.email "test@localhost" \
   && git config --global user.name "Test" \
   && git add main.c \
   && git commit -m"Test source"
-cd /usr/local/tomcat
+cd /usr/local/tomcat \
+    && cp ${OPENGROKVERSION}/lib/source.war webapps/${OPENGROK_WEBAPP_CONTEXT:-source}.war \
     && java -jar ${OPENGROKVERSION}/lib/opengrok.jar \
 	    -d /var/opengrok/data \
 	    -G -H -P -S \
