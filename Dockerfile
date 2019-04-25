@@ -52,7 +52,7 @@ RUN apk update \
 COPY run_tests.sh /usr/local/tomcat/
 VOLUME /data
 USER tomcat
-CMD mv ${OPENGROKVERSION}/lib/source.war webapps/${OPENGROK_WEBAPP_CONTEXT:-source}.war \
+CMD cp -n ${OPENGROKVERSION}/lib/source.war webapps/${OPENGROK_WEBAPP_CONTEXT:-source}.war \
     && java -jar ${OPENGROKVERSION}/lib/opengrok.jar \
         -d /var/opengrok/data \
         -G -H -P -S \
