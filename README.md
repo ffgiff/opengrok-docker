@@ -6,7 +6,7 @@ a read-only bind-mount. Repositories will be re-indexed daily by a cron job,
 but they will need to be updated from outside the container as the container
 has no credentials and the repositories should not be writable.
 
-It is recommended to start the docker container and expose it via
+It is recommended to start the container and expose it via
 reverse-proxy. The environment variable ```OPENGROK_WEBAPP_CONTEXT``` is the
 deployment path of OpenGrok, i.e. it will expose it on
 http://hostname/$OPENGROK_WEBAPP_CONTEXT. Setting
@@ -23,8 +23,8 @@ http://localhost:8080/source-services to http://localhost/source-services and
 http://localhost:8090/source-apps to http://localhost/source-apps.
 
 ```bash
-sudo docker run -e OPENGROK_WEBAPP_CONTEXT=source-apps -i --restart=unless-stopped --name=opengrok_apps -v /data/src-apps:/data:ro,Z -p 127.0.0.1:8090:8080 -t vertu20140207/opengrok:latest
-sudo docker run -e OPENGROK_WEBAPP_CONTEXT=source-services -i --restart=unless-stopped --name=opengrok_services -v /data/src-services:/data:ro,Z -p 127.0.0.1:8080:8080 -t vertu20140207/opengrok:latest
+sudo docker run -e OPENGROK_WEBAPP_CONTEXT=source-apps -i --restart=unless-stopped --name=opengrok_apps -v /data/src-apps:/data:ro,Z -p 127.0.0.1:8090:8080 -t ffgiff/opengrok:alpine
+sudo docker run -e OPENGROK_WEBAPP_CONTEXT=source-services -i --restart=unless-stopped --name=opengrok_services -v /data/src-services:/data:ro,Z -p 127.0.0.1:8080:8080 -t ffgiff/opengrok:alpine
 ```
 
 ## Example re-indexing
@@ -32,7 +32,7 @@ It is also possible to use docker exec to run commands within the container,
 e.g. to perform an immediate reindexing of opengrok:
 
 ```bash
-sudo docker exec -u tomcat opengrok_services /usr/local/tomcat/opengrok-1.0/bin/OpenGrok index /data
+sudo docker exec -u tomcat java -jar ${OPENGROKVERSION}/lib/opengrok.jar -d /var/opengrok/data -G -H -P -S -s /data -W /var/opengrok/etc/configuration.xml
 ```
 
 ## Example updating git repositories
