@@ -13,10 +13,13 @@ git config --global user.email "test@localhost" \
   && git config --global user.name "Test" \
   && git add main.c \
   && git commit -m"Test source"
-cd /usr/local/tomcat
-/usr/local/tomcat/${OPENGROKVERSION}/bin/OpenGrok deploy \
-    && /usr/local/tomcat/${OPENGROKVERSION}/bin/OpenGrok index $(dirname $SRCDIR) \
-    && sudo crond \
+cd /usr/local/tomcat \
+    && cp ${OPENGROKVERSION}/lib/source.war webapps/${OPENGROK_WEBAPP_CONTEXT:-source}.war \
+    && java -jar ${OPENGROKVERSION}/lib/opengrok.jar \
+	    -d /var/opengrok/data \
+	    -G -H -P -S \
+	    -s $(dirname $SRCDIR) \
+	    -W /var/opengrok/etc/configuration.xml \
     && catalina.sh start
 sleep 30
 curl -f http://localhost:8080/source/xref/$(basename $SRCDIR)/
