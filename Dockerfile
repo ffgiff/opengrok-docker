@@ -2,7 +2,7 @@
 FROM tomcat:8.5-jre8-alpine
 
 # Name of OpenGrok zip file.
-ENV OPENGROKVERSIONCODE 1.2.7
+ENV OPENGROKVERSIONCODE 1.2.23
 ENV OPENGROKVERSION opengrok-${OPENGROKVERSIONCODE}
 ENV OPENGROKZIP https://github.com/oracle/OpenGrok/releases/download/${OPENGROKVERSIONCODE}/${OPENGROKVERSION}.tar.gz
 
